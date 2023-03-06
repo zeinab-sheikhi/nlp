@@ -23,3 +23,49 @@ def predict_pos_list(sentences, model):
 # print(predict_pos("J' aime le chocolat", fr_model))
 print(predict_pos_list(["J' aime le chocolat", "Je m'appelle Zeinab",
                         "J'ai 24 ans", "J'adore la litterature"], fr_model))
+
+
+# Indicator function returns 1 if its predicate is true and 0 otherwise
+def indicator(y, y_hat, error=False):
+    if error:
+        return 0 if y == y_hat else 1
+    else:
+        return 1 if y == y_hat else 0
+
+
+# The sentence accuracy corresponds to the proportion of sentences of the test set for
+# which all labels are predicted correctly
+def sentence_accuracy(set_size, y, y_hat, error=False):
+    sum = 0
+    for i in range(set_size):
+        sum += indicator(y[i], y_hat[i], error=error)
+    return sum / set_size    
+
+
+# The micro (word) accuracy corresponds to the proportion of word in the test set for whose
+# label is correctly predicted:
+def micro_word_accuracy(set_size, word_size, y, y_hat, error=False):
+    j_sum = 0
+    i_sum = 0
+    for i in range(set_size):
+        label_size = len(y[i])
+        labels = y[i]
+        labels_hat = y_hat[i]
+        for j in range(label_size):
+            j_sum += indicator(labels[j], labels_hat[j], error=error)
+        i_sum += j_sum
+    return i_sum / word_size
+
+
+# The sentence error rate corresponds to the proportion of sentences of the test set for
+# which at least one label is mispredicted
+def sentence_error_rate(set_size, y, y_hat):
+    return sentence_accuracy(set_size, y, y_hat, error=True)
+
+
+# The (word) error rate corresponds to the proportion of words of the test set for which the
+# label is mispredicted:
+def word_error_rate(set_size, word_size, y, y_hat):
+    return micro_word_accuracy(set_size, word_size, y, y_hat, error=True)
+
+
