@@ -1,0 +1,25 @@
+import spacy
+from spacy.tokens import Doc
+
+s = "I 'm a great admirer of Ms. O'Neil 's work"
+ss = s.split()
+
+fr_model = spacy.load('fr_core_news_sm')
+
+
+def predict_pos(sentence, model):
+    model.tokenizer = lambda x: Doc(model.vocab, x.split())
+    return [token.pos_ for token in model(sentence)]
+
+
+# Write a function, that takes as input a list of sentences and returns a list of PoS annotations
+def predict_pos_list(sentences, model):
+    output = list()
+    for sentence in sentences:
+        output.append([token.pos_ for token in model(sentence)])
+    return output
+
+
+# print(predict_pos("J' aime le chocolat", fr_model))
+print(predict_pos_list(["J' aime le chocolat", "Je m'appelle Zeinab",
+                        "J'ai 24 ans", "J'adore la litterature"], fr_model))
