@@ -1,2 +1,2 @@
 # nlp
-This repository contains codes for different techniques in NLP
+This repository contains NLP projects for different courses I've taken.
