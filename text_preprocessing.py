@@ -1,7 +1,6 @@
 # Text preprocessing is usually the first step you’ll take when faced with an NLP task.
 # Noise removal, Tokenization, Normalization: Lemmatization, Stemming
 
-
 import re
 import nltk
 from nltk.tokenize import word_tokenize
@@ -20,7 +19,7 @@ tokenized = word_tokenize(cleaned)
 stemmer = PorterStemmer()
 stemmed = [stemmer.stem(token) for token in tokenized]
 
-# By default lemmatize() treats every word as a noun.
+# By default lemmatize() treats every word as a noun unless you add the pos argument
 lemmatizer = WordNetLemmatizer()
 lemmatized = [lemmatizer.lemmatize(token, pos=get_part_of_speech(token)) for token in tokenized]
 print(lemmatized)
