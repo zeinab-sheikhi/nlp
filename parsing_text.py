@@ -5,13 +5,8 @@ import spacy
 from nltk import Tree
 from squids import squids_text
 
-dependency_parser = spacy.load('en')
+dependency_parser = spacy.load('en_core_web_sm')
 parsed_squids = dependency_parser(squids_text)
-
-
-my_sentence = "Your sentence goes here!"
-my_parsed_sentence = dependency_parser(my_sentence)
-
 
 def to_nltk_tree(node):
     if node.n_lefts + node.n_rights > 0:
@@ -20,9 +15,11 @@ def to_nltk_tree(node):
     else:
         return node.orth_    
 
+def parser(sentence):
+    parser = spacy.load('en_core_web_sm')
+    parsed_sentence = parser(sentence)
+    for sent in parsed_sentence.sents:
+        to_nltk_tree(sent.root).pretty_print()
 
-for sent in parsed_squids.snets:
-    to_nltk_tree(sent.root).pretty_print()
 
-for sent in my_parsed_sentence.sents:
-    to_nltk_tree(sent.root).pretty_print()
+parser(parsed_squids)
