@@ -31,3 +31,16 @@ print(model.score(X_test, predictions))
 N = len(y_test)
 manual_score = np.sum(predictions == y_test) / N
 print(manual_score)
+
+
+from sklearn.neural_network import MLPClassifier
+from sklearn.preprocessing import StandardScaler
+
+scaler = StandardScaler()
+X_train2 = scaler.fit_transform(X_train)
+X_test2 = scaler.transform(X_test)
+
+model2 = MLPClassifier(max_iter=500)
+model2.fit(X_train2, y_train)
+print(model.score(X_train2, y_train))
+print(model.score(X_test2, y_test))
