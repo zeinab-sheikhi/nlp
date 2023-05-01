@@ -32,7 +32,6 @@ N = len(y_test)
 manual_score = np.sum(predictions == y_test) / N
 print(manual_score)
 
-
 from sklearn.neural_network import MLPClassifier
 from sklearn.preprocessing import StandardScaler
 
