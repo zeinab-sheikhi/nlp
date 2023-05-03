@@ -35,8 +35,8 @@ def visualize(label):
     plt.show()   
 
 
-# visualize('spam')
-# visualize('ham')
+visualize('spam')
+visualize('ham')
 
 df['predictions'] = model.predict(X)
 
