@@ -10,16 +10,17 @@ from bs4 import BeautifulSoup
 
 
 wordnet_lemmmatizer = WordNetLemmatizer()
-stop_words = set(w.rstrip() for w in open('stopwords.txt'))
+stop_words = set(w.rstrip() for w in open('data/stopwords.txt'))
 
-positive_reviews = BeautifulSoup(open(r"D:\Mine\Udemy\nlp\nlp\electronics\positive.review").read())
+positive_reviews = BeautifulSoup(open(r"data/electronics/positive.review").read(), features="lxml")
 positive_reviews = positive_reviews.find_all('review_text')
 
-negative_reviews = BeautifulSoup(open(r"D:\Mine\Udemy\nlp\nlp\electronics\negative.review").read())
+negative_reviews = BeautifulSoup(open(r"data/electronics/negative.review").read(), features="lxml")
 negative_reviews = negative_reviews.find_all('review_text')
 
 np.random.shuffle(positive_reviews)
 positive_reviews = positive_reviews[: len(negative_reviews)]
+
 
 def my_tokenizer(s):
     s = s.lower()
@@ -28,6 +29,7 @@ def my_tokenizer(s):
     tokens = [wordnet_lemmmatizer.lemmatize(t) for t in tokens]
     tokens = [t for t in tokens if t not in stop_words]
     return tokens
+
 
 word_index_map = {}
 current_index = 0
@@ -42,7 +44,7 @@ for review in positive_reviews:
     for token in tokens:
         if token not in word_index_map:
             word_index_map[token] = current_index
-            current_index +=1
+            current_index += 1
 
 
 for review in negative_reviews:
@@ -51,7 +53,7 @@ for review in negative_reviews:
     for token in tokens:
         if token not in word_index_map:
             word_index_map[token] = current_index
-            current_index +=1
+            current_index += 1
 
 
 def tokens_to_vector(tokens, label):
@@ -63,34 +65,32 @@ def tokens_to_vector(tokens, label):
     x[-1] = label
     return x
 
+
 N = len(positive_tokenized) + len(negative_tokenized)
 data = np.zeros((N, len(word_index_map) + 1))
 i = 0
 
 for token in positive_tokenized:
     xy = tokens_to_vector(token, 1)
-    data[i,:] = xy
+    data[i, :] = xy
     i += 1    
 
 for token in negative_tokenized:
     xy = tokens_to_vector(token, 0)
-    data[i,:] = xy
+    data[i, :] = xy
     i += 1
 
 np.random.shuffle(data)
-X = data[:,:-1]
-y = data[:,-1]
+X = data[:, :-1]
+y = data[:, -1]
 
-X_train = X[:-100,]
-y_train = y[:-100,]
+X_train = X[:-100, ]
+y_train = y[:-100, ]
 
-X_test = X[-100:,]
-y_test = y[-100:,]
+X_test = X[-100:, ]
+y_test = y[-100:, ]
 
-# print(X_train)
-# print(y_train)
-print(X_test)
-print(y_test)
+
 model = LogisticRegression()
 model.fit(X_train, y_train)
 score = model.score(X_test, y_test)
@@ -100,4 +100,4 @@ threshold = 0.5
 for word, index in iteritems(word_index_map):
     weight = model.coef_[0][index]
     if weight > threshold or weight < -threshold:
-         print(word, weight)
+        print(word, weight)
