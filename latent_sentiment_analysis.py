@@ -50,13 +50,14 @@ for title in titles:
         print(e)
         print(title)
 
-print(word_index_map)
 
 def tokens_to_vector(tokens):
     x = np.zeros(len(word_index_map))
+    print(x)
     for t in tokens:
         i = word_index_map[t]
-        x[i] = 1
+        print(i)
+        x[i] = 1    
     return x
 
 
@@ -65,16 +66,17 @@ D = len(word_index_map)
 X = np.zeros((D, N))
 i = 0
 
-for tokens in all_tokens:
-    X[:, i] = tokens_to_vector(tokens)
-    i += 1
+tokens_to_vector(all_tokens[0])
+# for tokens in all_tokens:
+#     X[:, i] = tokens_to_vector(tokens)
+#     i += 1
 
 
-svd = TruncatedSVD()
-Z = svd.fit_transform(X)
-plt.scatter(Z[:, 0], Z[:, 1])
+# svd = TruncatedSVD()
+# Z = svd.fit_transform(X)
+# plt.scatter(Z[:, 0], Z[:, 1])
 
-for i in range(D):
-    plt.annotate(index_word_map[i], xy=(Z[i, 0], Z[i, 1]))
+# for i in range(D):
+#     plt.annotate(index_word_map[i], xy=(Z[i, 0], Z[i, 1]))
 
 # plt.show()
