@@ -1,50 +1,45 @@
 import nltk
 import random
-import numpy as np
 
 from bs4 import BeautifulSoup
 
 
-positive_reviews = BeautifulSoup(open('./data/positive.review').read(), features="html.parser")
+positive_reviews = BeautifulSoup(open('./data/electronics/positive.review').read(), features="html.parser")
 positive_reviews = positive_reviews.findAll('review_text')
 
 trigrams = {}
+trigrams_probabilities = {}
+
 
 for review in positive_reviews:
     s = review.text.lower()
     tokens = nltk.tokenize.word_tokenize(s)
     for i in range(len(tokens) - 2):
-        k =  (tokens[i], tokens[i +2])
+        k = (tokens[i], tokens[i + 2])
         if k not in trigrams:
             trigrams[k] = []
-        trigrams[k].append(tokens[i+1])
+        trigrams[k].append(tokens[i + 1])
 
 
-
-trigrams_probabilities = {}
 for k, words in trigrams.items():
-    
     if len(set(words)) > 1:
-        d = {}
-        n = 0
-        for w in words:
-            if w not in d:
-                d[w] = 0
-            d[w] += 1
-            n += 1
-            for w, c in d.items():
-                d[w] = float(c) / n
-        trigrams_probabilities[k] = d
-    
-print(trigrams_probabilities)
+        new_dict = {}
+        for word in words:
+            if word not in new_dict:
+                new_dict[word] = 0
+            new_dict[word] += 1
+            for word, count in new_dict.items():
+                new_dict[word] = float(count) / len(words)
+        trigrams_probabilities[k] = new_dict
+
 
 def random_sample(d):
     r = random.random()
     cumulative = 0
-    for w, p in d.items():
-        cumulative += p
+    for word, probability in d.items():
+        cumulative += probability
         if r < cumulative:
-            return w
+            return word
 
 
 def test_spinner():
@@ -54,13 +49,16 @@ def test_spinner():
     tokens = nltk.tokenize.word_tokenize(s)
     for i in range(len(tokens) - 2):
         if random.random() < 0.2:
-            k = (tokens[i], tokens[i+2])
+            k = (tokens[i], tokens[i + 2])
             if k in trigrams_probabilities:
                 w = random_sample(trigrams_probabilities[k])
-                tokens[i+1] = w
+                tokens[i + 1] = w
     print("Spun") 
-    print(" ".join(tokens))
-    # print(" ".join(tokens).replace(" .", ".").replace(" '", "'").replace(" ,", ",").replace("$ ", "$").replace(" :", ":"))
+    s = ""
+    for t in tokens:
+        if t is not None:
+            s += t + " "
+    print(s)
+
 
 test_spinner()
-
